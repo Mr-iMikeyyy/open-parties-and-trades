@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "opatr",
+	"version": "${version}",
+	"name": "Open Parties and Trades",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/opatr/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.madmike.opatr.server.OpenPartiesAndTrades"
+		],
+		"client": [
+          "com.madmike.opatr.client.OpenPartiesAndTradesClient"
+		]
+	},
+	"mixins": [
+		"opatr.mixins.json",
+		{
+			"config": "opatr.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
