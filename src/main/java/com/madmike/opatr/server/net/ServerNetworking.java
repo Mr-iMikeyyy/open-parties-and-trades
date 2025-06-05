@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ServerNetworking {
     public static final Identifier CLICK_OFFER_PACKET = new Identifier(OpenPartiesAndTrades.MOD_ID, "click_offer");
@@ -57,9 +58,7 @@ public class ServerNetworking {
         ServerPlayNetworking.registerGlobalReceiver(LEFT_PARTY_PACKET, (server, player, handler, buf, responseSender) -> {
             server.execute(() -> {
                 // Perform cleanup or refresh on the server
-                OfferStorage.removeOffersFrom(player.getUuid());
-                // Optionally send sync packet
-                SyncAllOffersS2CPacket.sendToAll(server, OfferStorage.getAllOffers());
+                List<UUID> offers = OfferStorage.get(player.getServerWorld()).removePlayerOffers(player.getUuid());
             });
         });
     }

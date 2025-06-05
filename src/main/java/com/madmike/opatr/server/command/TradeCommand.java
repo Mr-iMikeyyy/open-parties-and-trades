@@ -1,6 +1,7 @@
 package com.madmike.opatr.server.command;
 
 import com.madmike.opatr.server.gui.TradingScreenHandler;
+import com.madmike.opatr.server.net.ServerNetworking;
 import com.madmike.opatr.server.trades.TradeOffer;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -11,7 +12,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import xaero.pac.common.parties.party.api.IPartyAPI;
 import xaero.pac.common.server.api.OpenPACServerAPI;
 import xaero.pac.common.server.parties.party.api.IServerPartyAPI;
 import com.madmike.opatr.server.data.OfferStorage;
@@ -23,7 +23,7 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class TradeCommand {
-    public static void register() {
+    public static void registerCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(literal("trade")
                     // Base /trade opens the GUI
@@ -79,13 +79,16 @@ public class TradeCommand {
         player.getInventory().removeOne(stack); // remove 1 item
 
         TradeOffer offer = new TradeOffer(
+                UUID.randomUUID(),
                 player.getUuid(),
                 listedItem,
                 price,
                 party.getId()
         );
 
-        OfferStorage.get(player.getServer().getOverworld()).addOffer(offer);
+        OfferStorage.get(player.getServerWorld()).addOffer(offer);
+
+
 
         player.sendMessage(Text.literal("✔ Listed item for " + price + " coins.").formatted(Formatting.GOLD), false);
         return 1;

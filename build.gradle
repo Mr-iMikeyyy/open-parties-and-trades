@@ -10,29 +10,23 @@ base {
 	archivesName = project.archives_base_name
 }
 
+
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
-	exclusiveContent {
-		forRepository {
-			maven {
-				name = "Modrinth"
-				url = "https://api.modrinth.com/maven"
-			}
-		}
-		filter {
-			includeGroup "maven.modrinth"
+	maven {
+		name = "Modrinth"
+		url = uri("https://api.modrinth.com/maven")
+		content {
+			includeGroup("maven.modrinth")
 		}
 	}
 
-	maven { url 'https://maven.wispforest.io' }
+	maven {
+		url = uri("https://maven.wispforest.io")
+	}
 
 	maven {
 		name = "Ladysnake Mods"
-		url = 'https://maven.ladysnake.org/releases'
+		url = uri("https://maven.ladysnake.org/releases")
 	}
 }
 

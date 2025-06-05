@@ -1,5 +1,6 @@
 package com.madmike.opatr.client.monitor;
 
+import com.madmike.opatr.client.packets.LeftPartyC2SPacket;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import xaero.pac.client.api.OpenPACClientAPI;
 import xaero.pac.client.parties.party.api.IClientPartyAPI;

@@ -27,6 +27,6 @@ public class OpenPartiesAndTrades implements ModInitializer {
 		ModScreens.registerScreenHandlers();
 
 		// Register commands
-		TradeCommand.register();
+		TradeCommand.registerCommands();
 	}
 }

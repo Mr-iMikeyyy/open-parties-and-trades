@@ -30,7 +30,7 @@ public class TradingScreen extends HandledScreen<TradingScreenHandler> {
 
     private static final Identifier TEXTURE = new Identifier("minecraft", "textures/gui/container/generic_54.png");
 
-    private TradeTab currentTab = TradeTab.MY_OFFERS;
+    private TradeTab currentTab = new TradeTab();
 
     private final List<TradeOffer> offers = new ArrayList<>();
 

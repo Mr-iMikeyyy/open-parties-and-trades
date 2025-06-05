@@ -5,11 +5,14 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 public class OfferStorage extends PersistentState {
     public static final String SAVE_KEY = "open_parties_and_trading_offers";
@@ -18,6 +21,33 @@ public class OfferStorage extends PersistentState {
 
     public List<TradeOffer> getOffers() {
         return offers;
+    }
+
+    public List<UUID> removePlayerOffers(UUID playerId) {
+        List<TradeOffer> removedOffers = new ArrayList<>();
+        List<UUID> removedIds = new ArrayList<>();
+
+        Iterator<TradeOffer> iterator = this.offers.iterator();
+        while (iterator.hasNext()) {
+            TradeOffer offer = iterator.next();
+            if (offer.seller().equals(playerId)) {
+                removedOffers.add(offer);
+                removedIds.add(offer.offerId());
+                iterator.remove(); // Remove from the list safely during iteration
+            }
+        }
+
+        markDirty();
+
+        // Give items back to the player if they’re online
+        ServerPlayerEntity player = world.getServer().getPlayerManager().getPlayer(playerUuid);
+        if (player != null) {
+            for (TradeOffer offer : removedOffers) {
+                player.giveItemStack(offer.item());
+            }
+        }
+
+        return removedIds;
     }
 
     public void addOffer(TradeOffer offer) {
