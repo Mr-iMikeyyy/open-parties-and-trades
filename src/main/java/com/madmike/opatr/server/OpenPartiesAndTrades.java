@@ -1,10 +1,12 @@
 package com.madmike.opatr.server;
 
 import com.madmike.opatr.server.command.TradeCommand;
+import com.madmike.opatr.server.data.OfferStorage;
+import com.madmike.opatr.server.events.EventManager;
 import com.madmike.opatr.server.net.ServerNetworking;
-import com.madmike.opatr.server.screens.ModScreens;
 import net.fabricmc.api.ModInitializer;
 
+import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,15 +20,17 @@ public class OpenPartiesAndTrades implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Initializing Trading Mod...");
+		LOGGER.info("Initializing OPATR...");
+
+		//Register Events
+		EventManager.register();
 
 		// Register networking
 		ServerNetworking.registerServerHandlers();
 
-		// Register screen handlers
-		ModScreens.registerScreenHandlers();
-
 		// Register commands
 		TradeCommand.registerCommands();
+
+		LOGGER.info("OPATR Initialized! Happy Trading!");
 	}
 }

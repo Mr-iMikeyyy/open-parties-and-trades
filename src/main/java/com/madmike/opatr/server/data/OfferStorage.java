@@ -23,33 +23,6 @@ public class OfferStorage extends PersistentState {
         return offers;
     }
 
-    public List<UUID> removePlayerOffers(UUID playerId) {
-        List<TradeOffer> removedOffers = new ArrayList<>();
-        List<UUID> removedIds = new ArrayList<>();
-
-        Iterator<TradeOffer> iterator = this.offers.iterator();
-        while (iterator.hasNext()) {
-            TradeOffer offer = iterator.next();
-            if (offer.seller().equals(playerId)) {
-                removedOffers.add(offer);
-                removedIds.add(offer.offerId());
-                iterator.remove(); // Remove from the list safely during iteration
-            }
-        }
-
-        markDirty();
-
-        // Give items back to the player if they’re online
-        ServerPlayerEntity player = world.getServer().getPlayerManager().getPlayer(playerUuid);
-        if (player != null) {
-            for (TradeOffer offer : removedOffers) {
-                player.giveItemStack(offer.item());
-            }
-        }
-
-        return removedIds;
-    }
-
     public void addOffer(TradeOffer offer) {
         offers.add(offer);
         markDirty(); // Important: mark the state dirty so it gets saved

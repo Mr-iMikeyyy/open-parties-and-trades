@@ -15,7 +15,7 @@ import java.util.UUID;
 public class ServerNetworking {
     public static final Identifier CLICK_OFFER_PACKET = new Identifier(OpenPartiesAndTrades.MOD_ID, "click_offer");
     public static final Identifier LIST_OFFER_PACKET = new Identifier(OpenPartiesAndTrades.MOD_ID, "list_offer");
-    public static final Identifier LEFT_PARTY_PACKET = new Identifier(OpenPartiesAndTrades.MOD_ID, "left_party");
+    public static final Identifier PARTY_CHANGE_PACKET = new Identifier(OpenPartiesAndTrades.MOD_ID, "party_change");
     public static final Identifier SYNC_OFFERS_PACKET = new Identifier(OpenPartiesAndTrades.MOD_ID, "sync_offers");
 
 
@@ -55,7 +55,7 @@ public class ServerNetworking {
             });
         });
 
-        ServerPlayNetworking.registerGlobalReceiver(LEFT_PARTY_PACKET, (server, player, handler, buf, responseSender) -> {
+        ServerPlayNetworking.registerGlobalReceiver(PARTY_CHANGE_PACKET, (server, player, handler, buf, responseSender) -> {
             server.execute(() -> {
                 // Perform cleanup or refresh on the server
                 List<UUID> offers = OfferStorage.get(player.getServerWorld()).removePlayerOffers(player.getUuid());
