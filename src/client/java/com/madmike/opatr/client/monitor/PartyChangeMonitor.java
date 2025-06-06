@@ -8,7 +8,7 @@ import xaero.pac.client.parties.party.api.IClientPartyAPI;
 
 import java.util.UUID;
 
-public class PartyLeaveMonitor {
+public class PartyChangeMonitor {
     private static IClientPartyAPI lastKnownParty = OpenPACClientAPI.get().getClientPartyStorage().getParty();
     private static int tickCounter = 0;
 

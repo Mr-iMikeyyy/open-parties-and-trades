@@ -1,4 +1,4 @@
 package com.madmike.opatr.server.packets;
 
-public class SyncPartiesCache {
+public class SyncAllPartiesS2CPacket {
 }

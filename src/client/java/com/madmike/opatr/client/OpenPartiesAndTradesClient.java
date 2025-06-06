@@ -1,8 +1,8 @@
 package com.madmike.opatr.client;
 
 import com.madmike.opatr.client.gui.TradingScreen;
-import com.madmike.opatr.client.monitor.PartyLeaveMonitor;
-import com.madmike.opatr.client.net.SyncOffersReceiver;
+import com.madmike.opatr.client.monitor.PartyChangeMonitor;
+import com.madmike.opatr.client.net.ClientNetworking;
 import com.madmike.opatr.server.OpenPartiesAndTrades;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -19,9 +19,9 @@ public class OpenPartiesAndTradesClient implements ClientModInitializer {
     public void onInitializeClient() {
         OpenPartiesAndTrades.LOGGER.info("Client initialized");
 
-        SyncOffersReceiver.register();
+        ClientNetworking.register();
 
-        PartyLeaveMonitor.register();
+        PartyChangeMonitor.register();
 
         // Register the keybind
         openTradeKeybind = KeyBindingHelper.registerKeyBinding(new KeyBinding(

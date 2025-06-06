@@ -1,7 +1,7 @@
 package com.madmike.opatr.server.events;
 
 import com.madmike.opatr.server.data.OfferStorage;
-import com.madmike.opatr.server.packets.SyncOffersS2CPacket;
+import com.madmike.opatr.server.packets.SyncAllOffersS2CPacket;
 import com.madmike.opatr.server.trades.TradeOffer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -17,7 +17,7 @@ public class EventManager {
             OfferStorage storage = OfferStorage.get(player.getServerWorld());
             List<TradeOffer> offers = storage.getOffers();
 
-            SyncOffersS2CPacket.send(player, offers);
+            SyncAllOffersS2CPacket.send(player, offers);
         });
     }
 }

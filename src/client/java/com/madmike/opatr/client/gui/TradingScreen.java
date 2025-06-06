@@ -1,7 +1,7 @@
 package com.madmike.opatr.client.gui;
 
 import com.madmike.opatr.client.cache.OfferCache;
-import com.madmike.opatr.client.cache.PartyCache;
+import com.madmike.opatr.client.cache.PartyNameCache;
 import com.madmike.opatr.server.data.OfferStorage;
 import com.madmike.opatr.server.trades.TradeOffer;
 import io.wispforest.owo.ui.base.BaseOwoScreen;
@@ -21,17 +21,8 @@ import java.util.*;
 
 public class TradingScreen extends BaseOwoScreen<FlowLayout> {
 
-    private static TradingScreen instance;
-
-    private boolean dirty = false;
-
     public TradingScreen() {
         super(Text.literal("Trading Terminal"));
-        instance = this;
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
     }
 
     @Override
@@ -50,16 +41,6 @@ public class TradingScreen extends BaseOwoScreen<FlowLayout> {
         ScrollContainer<FlowLayout> tabBarScroll = Containers.horizontalScroll(Sizing.content(), Sizing.content(), tabBarContents);
         rootComponent.child(tabBarScroll);
 
-    }
-
-    public static boolean isOpen() {
-        return instance != null;
-    }
-
-    @Override
-    public void removed() {
-        super.removed();
-        instance = null;
     }
 
     private List<TradeTab> buildTabs() {
@@ -103,10 +84,13 @@ public class TradingScreen extends BaseOwoScreen<FlowLayout> {
         for (TradeOffer offer : OfferCache.CLIENT_OFFERS) {
             UUID partyId = offer.sellerParty();
             if (partyId != null && seenPartyIds.add(partyId)) {
-                // You’ll need a reliable way to get party name from UUID:
-                // for now we just display the UUID's first 8 chars
-                PartyCache.getNameByID(partyId);
-                partyNames.put(partyId, partyId.toString().substring(0, 8));
+                String name = PartyNameCache.getPartyNameByID(partyId);
+                if (name != null) {
+                    partyNames.put(partyId, name);
+                }
+                else {
+                    partyNames.put(partyId, partyId.toString().substring(0, 8));
+                }
             }
         }
         return partyNames;
@@ -121,15 +105,5 @@ public class TradingScreen extends BaseOwoScreen<FlowLayout> {
     private void switchTab(TradeTab tab) {
         // Handle tab switching logic
         System.out.println("Switched to: " + tab.partyId());
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (dirty) {
-            dirty = false;
-            this.rootComponent().clearChildren(); // Clear all UI elements
-            this.build(FlowLayout);      // Rebuild UI
-        }
     }
 }

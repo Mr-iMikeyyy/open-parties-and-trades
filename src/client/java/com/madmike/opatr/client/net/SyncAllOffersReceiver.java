@@ -1,7 +1,7 @@
 package com.madmike.opatr.client.net;
 
-import com.madmike.opatr.client.gui.TradingScreen;
 import com.madmike.opatr.server.net.ServerNetworking;
+import com.madmike.opatr.server.packets.PacketIDs;
 import com.madmike.opatr.server.trades.TradeOffer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
@@ -10,10 +10,10 @@ import java.util.List;
 
 import static com.madmike.opatr.client.cache.OfferCache.CLIENT_OFFERS;
 
-public class SyncOffersReceiver {
+public class SyncAllOffersReceiver {
 
     public static void register() {
-        ClientPlayNetworking.registerGlobalReceiver(ServerNetworking.SYNC_OFFERS_PACKET, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDs.SYNC_ALL_OFFERS_PACKET, (client, handler, buf, responseSender) -> {
             List<TradeOffer> offers = new ArrayList<>();
             int count = buf.readInt();
             for (int i = 0; i < count; i++) {
@@ -25,10 +25,6 @@ public class SyncOffersReceiver {
                 CLIENT_OFFERS.clear();
                 CLIENT_OFFERS.addAll(offers);
             });
-
-            if (client.currentScreen instanceof TradingScreen tradingScreen) {
-                tradingScreen.setDirty(true);
-            }
         });
     }
 }
