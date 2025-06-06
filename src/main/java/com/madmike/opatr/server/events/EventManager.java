@@ -1,8 +1,8 @@
 package com.madmike.opatr.server.events;
 
 import com.madmike.opatr.server.data.OfferStorage;
+import com.madmike.opatr.server.packets.SyncOffersS2CPacket;
 import com.madmike.opatr.server.trades.TradeOffer;
-import com.madmike.opatr.server.net.ServerNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -14,10 +14,10 @@ public class EventManager {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayerEntity player = handler.player;
 
-            OfferStorage storage = OfferStorage.get(server);
+            OfferStorage storage = OfferStorage.get(player.getServerWorld());
             List<TradeOffer> offers = storage.getOffers();
 
-            ServerNetworking.sendOfferSyncPacket(player, offers);
+            SyncOffersS2CPacket.send(player, offers);
         });
     }
 }

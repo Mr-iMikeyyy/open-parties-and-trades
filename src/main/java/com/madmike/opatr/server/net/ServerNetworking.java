@@ -2,7 +2,7 @@ package com.madmike.opatr.server.net;
 
 import com.glisco.numismaticoverhaul.ModComponents;
 import com.madmike.opatr.server.OpenPartiesAndTrades;
-import com.madmike.opatr.server.packets.SyncAllOffersS2CPacket;
+import com.madmike.opatr.server.packets.SyncOffersS2CPacket;
 import com.madmike.opatr.server.trades.TradeOffer;
 import com.madmike.opatr.server.data.OfferStorage;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -51,7 +51,7 @@ public class ServerNetworking {
 
                 // Resend updated offers to reflect change
                 List<TradeOffer> updated = TradeManager.getOffersFor(player.getUuid(), tab);
-                SyncAllOffersS2CPacket.send(player, updated);
+                SyncOffersS2CPacket.send(player, updated);
             });
         });
 

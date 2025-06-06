@@ -9,7 +9,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.List;
 
-public class SyncAllOffersS2CPacket {
+public class SyncOffersS2CPacket {
 
     public static void send(ServerPlayerEntity player, List<TradeOffer> offers) {
         PacketByteBuf buf = PacketByteBufs.create();

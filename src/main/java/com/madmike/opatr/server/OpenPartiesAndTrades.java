@@ -1,12 +1,10 @@
 package com.madmike.opatr.server;
 
 import com.madmike.opatr.server.command.TradeCommand;
-import com.madmike.opatr.server.data.OfferStorage;
 import com.madmike.opatr.server.events.EventManager;
 import com.madmike.opatr.server.net.ServerNetworking;
 import net.fabricmc.api.ModInitializer;
 
-import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
