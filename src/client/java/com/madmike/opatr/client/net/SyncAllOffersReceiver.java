@@ -1,8 +1,7 @@
 package com.madmike.opatr.client.net;
 
-import com.madmike.opatr.server.net.ServerNetworking;
 import com.madmike.opatr.server.packets.PacketIDs;
-import com.madmike.opatr.server.trades.TradeOffer;
+import com.madmike.opatr.server.data.TradeOffer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 import java.util.ArrayList;

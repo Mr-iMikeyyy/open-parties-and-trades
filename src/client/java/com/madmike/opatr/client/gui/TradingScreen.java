@@ -2,8 +2,7 @@ package com.madmike.opatr.client.gui;
 
 import com.madmike.opatr.client.cache.OfferCache;
 import com.madmike.opatr.client.cache.PartyNameCache;
-import com.madmike.opatr.server.data.OfferStorage;
-import com.madmike.opatr.server.trades.TradeOffer;
+import com.madmike.opatr.server.data.TradeOffer;
 import io.wispforest.owo.ui.base.BaseOwoScreen;
 import io.wispforest.owo.ui.component.Components;
 import io.wispforest.owo.ui.container.Containers;
@@ -12,7 +11,6 @@ import io.wispforest.owo.ui.container.ScrollContainer;
 import io.wispforest.owo.ui.core.*;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xaero.pac.client.api.OpenPACClientAPI;
 import xaero.pac.client.parties.party.api.IClientPartyAPI;
 
@@ -82,7 +80,7 @@ public class TradingScreen extends BaseOwoScreen<FlowLayout> {
 
         // Collect party IDs and their names from offers
         for (TradeOffer offer : OfferCache.CLIENT_OFFERS) {
-            UUID partyId = offer.sellerParty();
+            UUID partyId = offer.partyID();
             if (partyId != null && seenPartyIds.add(partyId)) {
                 String name = PartyNameCache.getPartyNameByID(partyId);
                 if (name != null) {

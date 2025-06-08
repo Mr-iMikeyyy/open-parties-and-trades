@@ -1,21 +1,17 @@
 package com.madmike.opatr.server.data;
 
-import com.madmike.opatr.server.trades.TradeOffer;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 public class OfferStorage extends PersistentState {
-    public static final String SAVE_KEY = "open_parties_and_trading_offers";
+    public static final String SAVE_KEY = "opatr_offers";
 
     private final List<TradeOffer> offers = new ArrayList<>();
 
@@ -61,5 +57,27 @@ public class OfferStorage extends PersistentState {
                 OfferStorage::new,                    // Constructor fallback
                 SAVE_KEY                              // Unique key
         );
+    }
+
+
+    public List<UUID> removeAllOffersOfPlayer(UUID uuid) {
+    }
+
+    public void updatePlayerOffers(UUID playerID, UUID partyID) {
+        for (int i = 0; i < offers.size(); i++) {
+            TradeOffer offer = offers.get(i);
+            if (offer.sellerID().equals(playerID)) {
+                // Create a new offer with the updated party ID, keeping the same other fields
+                TradeOffer updated = new TradeOffer(
+                        offer.offerID(),
+                        offer.sellerID(),
+                        offer.item().copy(),
+                        offer.price(),
+                        partyID
+                );
+                offers.set(i, updated);
+            }
+        }
+        markDirty();
     }
 }

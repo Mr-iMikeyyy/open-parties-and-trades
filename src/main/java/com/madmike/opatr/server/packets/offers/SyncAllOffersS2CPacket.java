@@ -1,7 +1,7 @@
-package com.madmike.opatr.server.packets;
+package com.madmike.opatr.server.packets.offers;
 
-import com.madmike.opatr.server.net.ServerNetworking;
-import com.madmike.opatr.server.trades.TradeOffer;
+import com.madmike.opatr.server.data.TradeOffer;
+import com.madmike.opatr.server.packets.PacketIDs;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.PacketByteBuf;

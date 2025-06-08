@@ -5,12 +5,10 @@ import com.madmike.opatr.server.events.EventManager;
 import com.madmike.opatr.server.net.ServerNetworking;
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OpenPartiesAndTrades implements ModInitializer {
+public class OPATR implements ModInitializer {
 	public static final String MOD_ID = "opatr";
 
 	// This logger is used to write text to the console and the log file.

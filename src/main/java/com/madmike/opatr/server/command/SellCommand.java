@@ -1,7 +1,11 @@
 package com.madmike.opatr.server.command;
 
-import com.madmike.opatr.server.packets.SyncListOfferS2CPacket;
-import com.madmike.opatr.server.trades.TradeOffer;
+import com.madmike.opatr.server.data.KnownParty;
+import com.madmike.opatr.server.data.PartyStorage;
+import com.madmike.opatr.server.packets.offers.SyncAddOfferS2CPacket;
+import com.madmike.opatr.server.data.TradeOffer;
+import com.madmike.opatr.server.packets.party.SyncNewPartyS2CPacket;
+import com.madmike.opatr.server.packets.party.SyncUpdatePartyS2CPacket;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.item.ItemStack;
@@ -47,21 +51,35 @@ public class SellCommand {
         }
 
         IServerPartyAPI party = OpenPACServerAPI.get(server).getPartyManager().getPartyByMember(player.getUuid());
+        if (party != null) {
+            PartyStorage ps = PartyStorage.get(player.getServerWorld());
+            if (!ps.getKnownParties().containsKey(party.getId())) {
+                KnownParty newParty = new KnownParty(party.getId(), party.getDefaultName());
+                ps.addNewParty(newParty);
+                SyncNewPartyS2CPacket.sendToAll(server, newParty);
+            }
+            else if (!ps.getKnownParties().get(party.getId()).name().equals(party.getDefaultName())) {
+                KnownParty updatedParty = new KnownParty(party.getId(), party.getDefaultName());
+                ps.updatePartyName(updatedParty);
+                SyncUpdatePartyS2CPacket.sendToAll(updatedParty, server);
+            }
+        }
+
 
         ItemStack listedItem = stack.copy();
-        player.getInventory().removeOne(stack); // remove 1 item
+        player.getMainHandStack().setCount(0);// remove the item
 
         TradeOffer offer = new TradeOffer(
                 UUID.randomUUID(),
                 player.getUuid(),
                 listedItem,
                 price,
-                party.getId()
+                (party == null ? null : party.getId())
         );
 
         OfferStorage.get(player.getServerWorld()).addOffer(offer);
 
-        SyncListOfferS2CPacket.sendToAll(offer, player.getServer());
+        SyncAddOfferS2CPacket.sendToAll(offer, player.getServer());
 
         player.sendMessage(Text.literal("Listed item for " + price + " coins.").formatted(Formatting.GOLD), false);
         return 1;

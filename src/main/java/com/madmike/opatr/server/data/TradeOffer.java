@@ -1,4 +1,4 @@
-package com.madmike.opatr.server.trades;
+package com.madmike.opatr.server.data;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
