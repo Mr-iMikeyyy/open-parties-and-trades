@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.madmike.opatr.server.OpenPartiesAndTrades"
+          "com.madmike.opatr.server.OPATR"
 		],
 		"client": [
-          "com.madmike.opatr.client.OpenPartiesAndTradesClient"
+			"com.madmike.opatr.client.OPATRClient"
 		]
 	},
 	"mixins": [
