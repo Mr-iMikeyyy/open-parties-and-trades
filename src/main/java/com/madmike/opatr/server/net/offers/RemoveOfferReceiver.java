@@ -1,6 +1,6 @@
-package com.madmike.opatr.server.net;
+package com.madmike.opatr.server.net.offers;
 
-import com.madmike.opatr.server.data.OfferStorage;
+import com.madmike.opatr.server.data.TradeOfferStorage;
 import com.madmike.opatr.server.data.TradeOffer;
 import com.madmike.opatr.server.packets.PacketIDs;
 import com.madmike.opatr.server.packets.offers.SyncRemoveOfferS2CPacket;
@@ -11,7 +11,7 @@ public class RemoveOfferReceiver {
         ServerPlayNetworking.registerGlobalReceiver(PacketIDs.REMOVE_OFFER_PACKET, (server, player, handler, buf, responseSender) -> {
             server.execute(() -> {
 
-                OfferStorage storage = OfferStorage.get(player.getServerWorld());
+                TradeOfferStorage storage = TradeOfferStorage.get(player.getServerWorld());
                 TradeOffer offer = TradeOffer.readFromBuf(buf);
                 storage.removeOffer(offer);
                 SyncRemoveOfferS2CPacket.sendToAll(offer, server);

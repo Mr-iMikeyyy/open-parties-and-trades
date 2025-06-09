@@ -1,4 +1,4 @@
-package com.madmike.opatr.client.net;
+package com.madmike.opatr.client.net.party;
 
 import com.madmike.opatr.client.cache.PartyNameCache;
 import com.madmike.opatr.server.packets.PacketIDs;

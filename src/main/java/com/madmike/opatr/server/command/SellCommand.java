@@ -1,11 +1,11 @@
 package com.madmike.opatr.server.command;
 
 import com.madmike.opatr.server.data.KnownParty;
-import com.madmike.opatr.server.data.PartyStorage;
+import com.madmike.opatr.server.data.KnownPartyStorage;
 import com.madmike.opatr.server.packets.offers.SyncAddOfferS2CPacket;
 import com.madmike.opatr.server.data.TradeOffer;
 import com.madmike.opatr.server.packets.party.SyncNewPartyS2CPacket;
-import com.madmike.opatr.server.packets.party.SyncUpdatePartyS2CPacket;
+import com.madmike.opatr.server.packets.party.SyncPartyS2CPacket;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import xaero.pac.common.server.api.OpenPACServerAPI;
 import xaero.pac.common.server.parties.party.api.IServerPartyAPI;
-import com.madmike.opatr.server.data.OfferStorage;
+import com.madmike.opatr.server.data.TradeOfferStorage;
 
 
 import java.util.UUID;
@@ -52,16 +52,11 @@ public class SellCommand {
 
         IServerPartyAPI party = OpenPACServerAPI.get(server).getPartyManager().getPartyByMember(player.getUuid());
         if (party != null) {
-            PartyStorage ps = PartyStorage.get(player.getServerWorld());
+            KnownPartyStorage ps = KnownPartyStorage.get(player.getServerWorld());
             if (!ps.getKnownParties().containsKey(party.getId())) {
                 KnownParty newParty = new KnownParty(party.getId(), party.getDefaultName());
-                ps.addNewParty(newParty);
-                SyncNewPartyS2CPacket.sendToAll(server, newParty);
-            }
-            else if (!ps.getKnownParties().get(party.getId()).name().equals(party.getDefaultName())) {
-                KnownParty updatedParty = new KnownParty(party.getId(), party.getDefaultName());
-                ps.updatePartyName(updatedParty);
-                SyncUpdatePartyS2CPacket.sendToAll(updatedParty, server);
+                ps.addOrUpdateParty(newParty);
+                SyncPartyS2CPacket.sendToAll(newParty, server);
             }
         }
 
@@ -77,7 +72,7 @@ public class SellCommand {
                 (party == null ? null : party.getId())
         );
 
-        OfferStorage.get(player.getServerWorld()).addOffer(offer);
+        TradeOfferStorage.get(player.getServerWorld()).addOffer(offer);
 
         SyncAddOfferS2CPacket.sendToAll(offer, player.getServer());
 

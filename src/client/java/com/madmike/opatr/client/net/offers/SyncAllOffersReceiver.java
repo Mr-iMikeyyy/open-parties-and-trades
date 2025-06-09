@@ -1,4 +1,4 @@
-package com.madmike.opatr.client.net;
+package com.madmike.opatr.client.net.offers;
 
 import com.madmike.opatr.server.packets.PacketIDs;
 import com.madmike.opatr.server.data.TradeOffer;

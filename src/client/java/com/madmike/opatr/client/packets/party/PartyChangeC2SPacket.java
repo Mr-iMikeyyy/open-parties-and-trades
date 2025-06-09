@@ -1,4 +1,4 @@
-package com.madmike.opatr.client.packets;
+package com.madmike.opatr.client.packets.party;
 
 import com.madmike.opatr.server.packets.PacketIDs;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

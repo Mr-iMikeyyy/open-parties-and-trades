@@ -1,4 +1,4 @@
-package com.madmike.opatr.client.net;
+package com.madmike.opatr.client.net.party;
 
 import com.madmike.opatr.server.data.KnownParty;
 import com.madmike.opatr.server.packets.PacketIDs;
@@ -6,9 +6,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 import static com.madmike.opatr.client.cache.PartyNameCache.KNOWN_PARTIES;
 
-public class SyncUpdatePartyReceiver {
+public class SyncPartyReceiver {
     public static void register() {
-        ClientPlayNetworking.registerGlobalReceiver(PacketIDs.SYNC_UPDATE_PARTY_PACKET, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDs.SYNC_PARTY_PACKET, (client, handler, buf, responseSender) -> {
             KnownParty party = KnownParty.readFromBuf(buf);
 
             // Run on main thread and apply to screen

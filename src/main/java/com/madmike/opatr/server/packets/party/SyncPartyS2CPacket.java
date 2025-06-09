@@ -8,14 +8,12 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class SyncNewPartyS2CPacket {
-    public static void sendToAll(MinecraftServer server, KnownParty party) {
+public class SyncPartyS2CPacket {
+    public static void sendToAll(KnownParty updatedParty, MinecraftServer server) {
         PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeUuid(party.partyID());
-        buf.writeString(party.name());
-
+        updatedParty.writeToBuf(buf);
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-            ServerPlayNetworking.send(player, PacketIDs.SYNC_NEW_PARTY_PACKET, buf);
+            ServerPlayNetworking.send(player, PacketIDs.SYNC_PARTY_PACKET, buf);
         }
     }
 }

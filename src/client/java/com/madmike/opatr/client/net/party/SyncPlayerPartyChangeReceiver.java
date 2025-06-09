@@ -1,6 +1,5 @@
-package com.madmike.opatr.client.net;
+package com.madmike.opatr.client.net.party;
 
-import com.madmike.opatr.server.OPATR;
 import com.madmike.opatr.server.data.TradeOffer;
 import com.madmike.opatr.server.packets.PacketIDs;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -10,9 +9,9 @@ import java.util.UUID;
 
 import static com.madmike.opatr.client.cache.OfferCache.CLIENT_OFFERS;
 
-public class SyncPartyChangeReceiver {
+public class SyncPlayerPartyChangeReceiver {
     public static void register() {
-        ClientPlayNetworking.registerGlobalReceiver(PacketIDs.SYNC_PARTY_CHANGE_PACKET, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(PacketIDs.SYNC_PLAYER_PARTY_CHANGE_PACKET, (client, handler, buf, responseSender) -> {
             UUID playerId = buf.readUuid();
             UUID partyId = buf.readBoolean() ? buf.readUuid() : null;
 
@@ -31,8 +30,6 @@ public class SyncPartyChangeReceiver {
                         iterator.set(updated);
                     }
                 }
-
-                OPATR.LOGGER.info("Updated party info for seller: " + playerId);
             });
         });
     }

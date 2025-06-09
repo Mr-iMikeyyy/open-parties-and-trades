@@ -8,7 +8,7 @@ import net.minecraft.world.PersistentState;
 
 import java.util.*;
 
-public class PartyStorage extends PersistentState {
+public class KnownPartyStorage extends PersistentState {
     public static final String SAVE_KEY = "opatr_parties";
 
     private final Map<UUID, KnownParty> knownParties = new HashMap<>();
@@ -17,14 +17,9 @@ public class PartyStorage extends PersistentState {
         return knownParties;
     }
 
-    public void addNewParty(KnownParty party) {
+    public void addOrUpdateParty(KnownParty party) {
         knownParties.put(party.partyID(), party);
         markDirty(); // Important: mark the state dirty so it gets saved
-    }
-
-    public void updatePartyName(KnownParty updatedParty) {
-        knownParties.put(updatedParty.partyID(), updatedParty);
-        markDirty();
     }
 
     @Override
@@ -37,8 +32,8 @@ public class PartyStorage extends PersistentState {
         return nbt;
     }
 
-    public static PartyStorage createFromNbt(NbtCompound tag) {
-        PartyStorage state = new PartyStorage();
+    public static KnownPartyStorage createFromNbt(NbtCompound tag) {
+        KnownPartyStorage state = new KnownPartyStorage();
         NbtList knownPartyList = tag.getList("KnownParties", NbtElement.COMPOUND_TYPE);
         for (NbtElement element : knownPartyList) {
             KnownParty party = KnownParty.fromNbt((NbtCompound) element);
@@ -47,10 +42,10 @@ public class PartyStorage extends PersistentState {
         return state;
     }
 
-    public static PartyStorage get(ServerWorld world) {
+    public static KnownPartyStorage get(ServerWorld world) {
         return world.getPersistentStateManager().getOrCreate(
-                PartyStorage::createFromNbt,          // Deserializer
-                PartyStorage::new,                    // Constructor fallback
+                KnownPartyStorage::createFromNbt,          // Deserializer
+                KnownPartyStorage::new,                    // Constructor fallback
                 SAVE_KEY                              // Unique key
         );
     }

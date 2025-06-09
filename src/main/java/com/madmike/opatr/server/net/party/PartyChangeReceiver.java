@@ -1,8 +1,8 @@
-package com.madmike.opatr.server.net;
+package com.madmike.opatr.server.net.party;
 
-import com.madmike.opatr.server.data.OfferStorage;
+import com.madmike.opatr.server.data.TradeOfferStorage;
 import com.madmike.opatr.server.packets.PacketIDs;
-import com.madmike.opatr.server.packets.party.SyncPartyChangeS2CPacket;
+import com.madmike.opatr.server.packets.party.SyncPlayerPartyChangeS2CPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 import java.util.UUID;
@@ -17,11 +17,11 @@ public class PartyChangeReceiver {
             server.execute(() -> {
                 // Handle the player's party change
 
-                OfferStorage storage = OfferStorage.get(player.getServerWorld());
+                TradeOfferStorage storage = TradeOfferStorage.get(player.getServerWorld());
 
                 storage.updatePlayerOffers(playerId, partyId);
 
-                SyncPartyChangeS2CPacket.sendToAll(playerId, partyId, server);
+                SyncPlayerPartyChangeS2CPacket.sendToAll(playerId, partyId, server);
             });
         });
     }

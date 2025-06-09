@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class OfferStorage extends PersistentState {
+public class TradeOfferStorage extends PersistentState {
     public static final String SAVE_KEY = "opatr_offers";
 
     private final List<TradeOffer> offers = new ArrayList<>();
@@ -39,8 +39,8 @@ public class OfferStorage extends PersistentState {
         return nbt;
     }
 
-    public static OfferStorage createFromNbt(NbtCompound tag) {
-        OfferStorage state = new OfferStorage();
+    public static TradeOfferStorage createFromNbt(NbtCompound tag) {
+        TradeOfferStorage state = new TradeOfferStorage();
         NbtList offerList = tag.getList("Offers", NbtElement.COMPOUND_TYPE);
         for (NbtElement element : offerList) {
             if (element instanceof NbtCompound compound) {
@@ -51,10 +51,10 @@ public class OfferStorage extends PersistentState {
         return state;
     }
 
-    public static OfferStorage get(ServerWorld world) {
+    public static TradeOfferStorage get(ServerWorld world) {
         return world.getPersistentStateManager().getOrCreate(
-                OfferStorage::createFromNbt,          // Deserializer
-                OfferStorage::new,                    // Constructor fallback
+                TradeOfferStorage::createFromNbt,          // Deserializer
+                TradeOfferStorage::new,                    // Constructor fallback
                 SAVE_KEY                              // Unique key
         );
     }
