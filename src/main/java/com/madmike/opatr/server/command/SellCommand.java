@@ -4,7 +4,6 @@ import com.madmike.opatr.server.data.KnownParty;
 import com.madmike.opatr.server.data.KnownPartyStorage;
 import com.madmike.opatr.server.packets.offers.SyncAddOfferS2CPacket;
 import com.madmike.opatr.server.data.TradeOffer;
-import com.madmike.opatr.server.packets.party.SyncNewPartyS2CPacket;
 import com.madmike.opatr.server.packets.party.SyncPartyS2CPacket;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;

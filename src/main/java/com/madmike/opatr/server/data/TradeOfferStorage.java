@@ -59,10 +59,6 @@ public class TradeOfferStorage extends PersistentState {
         );
     }
 
-
-    public List<UUID> removeAllOffersOfPlayer(UUID uuid) {
-    }
-
     public void updatePlayerOffers(UUID playerID, UUID partyID) {
         for (int i = 0; i < offers.size(); i++) {
             TradeOffer offer = offers.get(i);

@@ -5,6 +5,7 @@ import com.glisco.numismaticoverhaul.currency.CurrencyComponent;
 import com.madmike.opatr.server.data.TradeOfferStorage;
 import com.madmike.opatr.server.data.TradeOffer;
 import com.madmike.opatr.server.packets.PacketIDs;
+import com.madmike.opatr.server.packets.offers.SyncRemoveOfferS2CPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -73,7 +74,8 @@ public class BuyOfferReceiver {
                 // Give money to seller if online
                 ServerPlayerEntity seller = server.getPlayerManager().getPlayer(sellerId);
                 if (seller != null) {
-                    CurrencyComponent.KEY.get(seller).modify(offer.price());
+                    CurrencyComponent sellerWallet = ModComponents.CURRENCY.get(sellerId);
+                    sellerWallet.modify(finalPrice);
                 } else {
                     // TODO: Offline seller handling (bank queue?)
                 }
@@ -86,7 +88,7 @@ public class BuyOfferReceiver {
 
                 // Remove offer from listing
                 storage.removeOffer(offer);
-                SyncRemoveOfferS2CPacket.sendToAll(offer);
+                SyncRemoveOfferS2CPacket.sendToAll(offer, server);
                 player.sendMessage(Text.literal("§aPurchase successful."), false);
             });
         });
