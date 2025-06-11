@@ -1,17 +1,23 @@
 package com.madmike.opatr.client.gui;
 
 import com.madmike.opatr.client.cache.PartyNameCache;
+import com.madmike.opatr.client.packets.offers.BuyOfferC2SPacket;
 import com.madmike.opatr.server.data.TradeOffer;
 import io.wispforest.owo.ui.base.BaseOwoScreen;
+import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.Components;
+import io.wispforest.owo.ui.component.ItemComponent;
+import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.container.Containers;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.container.ScrollContainer;
 import io.wispforest.owo.ui.core.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import xaero.pac.client.api.OpenPACClientAPI;
 import xaero.pac.client.parties.party.api.IClientPartyAPI;
@@ -100,9 +106,8 @@ public class TradingScreen extends BaseOwoScreen<FlowLayout> {
             if (shopperParty != null) {
                 //Add my offers
                 tabs.add(new TradeTab("My Offers", myOffersTabID));
-                // Add my parties offers
-                tabs.add(new TradeTab(shopperParty.getDefaultName(), shopperParty.getId(),
-                        OFFER_CACHE.stream().filter(e -> e.partyID() == shopperParty.getId() && e.sellerID() != shopperID).toList()));
+                // Add party tab
+                tabs.add(new TradeTab(shopperParty.getDefaultName(), shopperParty.getId()));
                 //Add Ally parties
                 shopperParty.getAllyPartiesStream().forEach(e ->
                         tabs.add(new TradeTab(PartyNameCache.PARTY_NAME_CACHE.get(e.getPartyId()), e.getPartyId(),
@@ -127,7 +132,10 @@ public class TradingScreen extends BaseOwoScreen<FlowLayout> {
         tabContentContainer.clearChildren();
         if (player != null) {
             if (tab.partyId() == myOffersTabID) {
+                //MY offers
                 List<TradeOffer> offers = OFFER_CACHE.stream().filter(e -> e.sellerID() == player.getUuid()).toList();
+                // Party Offers
+                OFFER_CACHE.stream().filter(e -> e.partyID() == shopperParty.getId() && e.sellerID() != shopperID).toList())
                 for (TradeOffer offer : offers) {
 
                 }
@@ -136,14 +144,59 @@ public class TradingScreen extends BaseOwoScreen<FlowLayout> {
                     for (TradeOffer offer : tab.offers()) {
                         // Display each offer; this is a placeholder
 
-                        tabContentContainer.child(
-                                Components.label(Text.literal(offer.toString())) // Replace with actual rendering later
-                        );
+                        offerListContainer.child(createOfferEntry(offer));
                     }
                 }
 
             }
         }
+    }
 
+    private Component createOfferEntry(TradeOffer offer) {
+        ItemStack stack = offer.item();
+        Text priceText = Text.literal(String.valueOf(offer.price())).formatted(Formatting.GOLD); // format however you like
+
+        // --- Icon for item ---
+        ItemComponent itemIcon = Components.item(stack);
+
+        // --- Price label ---
+        LabelComponent priceLabel = Components.label(priceText)
+                .horizontalTextAlignment(HorizontalAlignment.RIGHT); // optional gold color
+
+        // --- Row container for this offer ---
+        FlowLayout row = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(20))
+                .gap(6)
+                .cursorStyle(CursorStyle.HAND)
+
+                .surface(Surface.DARK_PANEL)
+                ;
+//                .mouseDown().subscribe((mouseX, mouseY, button) -> {
+//                    selectOffer(offer);
+//                    return true;
+//                });
+
+        // Stretch label to fill available space between icon and price
+        LabelComponent itemLabel = Components.label(stack.getName())
+                .sizing(Sizing.fill(100));
+
+        row.child(itemIcon);
+        row.child(itemLabel);
+        row.child(priceLabel);
+
+        return row;
+    }
+
+    private void selectOffer(TradeOffer offer) {
+        detailsPanel.clearChildren();
+
+        detailsPanel.child(Components.label(Text.literal("Item: " + offer.item().getName().getString())));
+        detailsPanel.child(Components.label(Text.literal("Price: " + offer.priceString())));
+
+        ButtonComponent buyButton = Components.button(Text.literal("Buy"), b -> {
+            // TODO: Send purchase request to server
+            BuyOfferC2SPacket.send();
+        });
+
+        detailsPanel.child(buyButton);
     }
 }
