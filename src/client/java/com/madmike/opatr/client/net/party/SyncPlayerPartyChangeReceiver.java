@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import java.util.ListIterator;
 import java.util.UUID;
 
-import static com.madmike.opatr.client.cache.OfferCache.CLIENT_OFFERS;
+import static com.madmike.opatr.client.cache.OfferCache.OFFER_CACHE;
 
 public class SyncPlayerPartyChangeReceiver {
     public static void register() {
@@ -16,7 +16,7 @@ public class SyncPlayerPartyChangeReceiver {
             UUID partyId = buf.readBoolean() ? buf.readUuid() : null;
 
             client.execute(() -> {
-                ListIterator<TradeOffer> iterator = CLIENT_OFFERS.listIterator();
+                ListIterator<TradeOffer> iterator = OFFER_CACHE.listIterator();
                 while (iterator.hasNext()) {
                     TradeOffer offer = iterator.next();
                     if (playerId.equals(offer.sellerID())) {

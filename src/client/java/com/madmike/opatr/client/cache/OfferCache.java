@@ -6,5 +6,5 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OfferCache {
-    public static final List<TradeOffer> CLIENT_OFFERS = new ArrayList<>();
+    public static final List<TradeOffer> OFFER_CACHE = new ArrayList<>();
 }

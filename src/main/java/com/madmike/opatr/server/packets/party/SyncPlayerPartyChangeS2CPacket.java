@@ -9,6 +9,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class SyncPlayerPartyChangeS2CPacket {
     public static void sendToAll(UUID playerID, @Nullable UUID partyId, MinecraftServer server) {
@@ -22,9 +23,10 @@ public class SyncPlayerPartyChangeS2CPacket {
         else {
             buf.writeBoolean(false);
         }
-
-        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-            ServerPlayNetworking.send(player, PacketIDs.SYNC_PLAYER_PARTY_CHANGE_PACKET, buf);
-        }
+        CompletableFuture.runAsync(() -> {
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                ServerPlayNetworking.send(player, PacketIDs.SYNC_PLAYER_PARTY_CHANGE_PACKET, buf);
+            }
+        });
     }
 }

@@ -4,7 +4,7 @@ import com.madmike.opatr.server.data.KnownParty;
 import com.madmike.opatr.server.packets.PacketIDs;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
-import static com.madmike.opatr.client.cache.PartyNameCache.KNOWN_PARTIES;
+import static com.madmike.opatr.client.cache.PartyNameCache.PARTY_NAME_CACHE;
 
 public class SyncPartyReceiver {
     public static void register() {
@@ -13,7 +13,7 @@ public class SyncPartyReceiver {
 
             // Run on main thread and apply to screen
             client.execute(() -> {
-                KNOWN_PARTIES.put(party.partyID(), party.name());
+                PARTY_NAME_CACHE.put(party.partyID(), party.name());
             });
         });
     }

@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 import java.util.UUID;
 
-import static com.madmike.opatr.client.cache.OfferCache.CLIENT_OFFERS;
+import static com.madmike.opatr.client.cache.OfferCache.OFFER_CACHE;
 
 public class SyncRemoveOfferReceiver {
     public static void register() {
@@ -14,7 +14,7 @@ public class SyncRemoveOfferReceiver {
 
             // Run on main thread and apply to screen
             client.execute(() -> {
-                CLIENT_OFFERS.removeIf(o -> o.offerID().equals(offerID));
+                OFFER_CACHE.removeIf(o -> o.offerID().equals(offerID));
             });
         });
     }

@@ -19,8 +19,8 @@ public class SyncAllPartiesReceiver {
             }
 
             client.execute(() -> {
-                PartyNameCache.KNOWN_PARTIES.clear();
-                PartyNameCache.KNOWN_PARTIES.putAll(receivedParties);
+                PartyNameCache.PARTY_NAME_CACHE.clear();
+                PartyNameCache.PARTY_NAME_CACHE.putAll(receivedParties);
             });
         });
     }

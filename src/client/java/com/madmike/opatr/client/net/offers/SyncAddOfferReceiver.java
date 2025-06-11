@@ -4,7 +4,7 @@ import com.madmike.opatr.server.data.TradeOffer;
 import com.madmike.opatr.server.packets.PacketIDs;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
-import static com.madmike.opatr.client.cache.OfferCache.CLIENT_OFFERS;
+import static com.madmike.opatr.client.cache.OfferCache.OFFER_CACHE;
 
 public class SyncAddOfferReceiver {
     public static void register() {
@@ -13,7 +13,7 @@ public class SyncAddOfferReceiver {
 
             // Run on main thread and apply to screen
             client.execute(() -> {
-                CLIENT_OFFERS.add(offer);
+                OFFER_CACHE.add(offer);
             });
         });
     }

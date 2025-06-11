@@ -8,12 +8,17 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.concurrent.CompletableFuture;
+
 public class SyncPartyS2CPacket {
     public static void sendToAll(KnownParty updatedParty, MinecraftServer server) {
         PacketByteBuf buf = PacketByteBufs.create();
         updatedParty.writeToBuf(buf);
-        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-            ServerPlayNetworking.send(player, PacketIDs.SYNC_PARTY_PACKET, buf);
-        }
+
+        CompletableFuture.runAsync(() -> {
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                ServerPlayNetworking.send(player, PacketIDs.SYNC_PARTY_PACKET, buf);
+            }
+        });
     }
 }

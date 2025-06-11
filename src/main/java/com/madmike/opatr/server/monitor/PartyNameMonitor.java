@@ -6,12 +6,10 @@ import com.madmike.opatr.server.packets.party.SyncPartyS2CPacket;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import xaero.pac.common.server.api.OpenPACServerAPI;
-import xaero.pac.common.server.parties.party.IPartyManager;
 import xaero.pac.common.server.parties.party.api.IPartyManagerAPI;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class PartyNameMonitor {
 
@@ -20,26 +18,35 @@ public class PartyNameMonitor {
             if (s.getTicks() % 60 != 0) return; // every 3 seconds
 
             IPartyManagerAPI partyManager = OpenPACServerAPI.get(server).getPartyManager();
-            KnownPartyStorage storage = KnownPartyStorage.get(server.getOverworld());
-            Map<UUID, KnownParty> knownParties = storage.getKnownParties();
+            KnownPartyStorage partyStorage = KnownPartyStorage.get(server.getOverworld());
 
             partyManager.getAllStream().forEach(party -> {
                 UUID id = party.getId();
                 String currentName = party.getDefaultName();
-                KnownParty knownParty = knownParties.get(id);
 
-                if (knownParty == null) {
-                    // New party, add and sync
+                KnownParty known = partyStorage.getKnownParties().get(id);
+
+                // If unknown party, add and send
+                if (known == null) {
                     KnownParty newParty = new KnownParty(id, currentName);
-                    storage.addOrUpdateParty(newParty);
-                    SyncPartyS2CPacket.sendToAll(newParty, server);
-                } else if (!currentName.equals(knownParty.name())) {
-                    // Name has changed, update and sync
+                    partyStorage.addOrUpdateParty(newParty);
+                    sendUpdateAsync(server, newParty);
+                    return;
+                }
+
+                // If name changed, update and send
+                if (!currentName.equals(known.name())) {
                     KnownParty updatedParty = new KnownParty(id, currentName);
-                    storage.addOrUpdateParty(updatedParty);
-                    SyncPartyS2CPacket.sendToAll(updatedParty, server);
+                    partyStorage.addOrUpdateParty(updatedParty);
+                    sendUpdateAsync(server, updatedParty);
                 }
             });
+        });
+    }
+
+    private static void sendUpdateAsync(MinecraftServer server, KnownParty party) {
+        CompletableFuture.runAsync(() -> {
+            SyncPartyS2CPacket.sendToAll(party, server);
         });
     }
 }

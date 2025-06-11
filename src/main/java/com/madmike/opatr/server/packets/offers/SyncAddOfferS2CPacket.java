@@ -8,6 +8,8 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.concurrent.CompletableFuture;
+
 public class SyncAddOfferS2CPacket {
 
     public static void sendToAll(TradeOffer offer, MinecraftServer server) {
@@ -15,10 +17,10 @@ public class SyncAddOfferS2CPacket {
         offer.writeToBuf(buf);
 
         // Get all online players and send the packet to each
-        if (server != null) {
+        CompletableFuture.runAsync(() -> {
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 ServerPlayNetworking.send(player, PacketIDs.SYNC_ADD_OFFER_PACKET, buf);
             }
-        }
+        });
     }
 }

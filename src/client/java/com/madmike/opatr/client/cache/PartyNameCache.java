@@ -5,5 +5,5 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PartyNameCache {
-    public static Map<UUID, String> KNOWN_PARTIES = new HashMap<>();
+    public static Map<UUID, String> PARTY_NAME_CACHE = new HashMap<>();
 }
