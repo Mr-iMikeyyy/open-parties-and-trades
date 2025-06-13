@@ -1,5 +1,6 @@
 package com.madmike.opatr.client.net.party;
 
+import com.madmike.opatr.client.gui.TradingScreen;
 import com.madmike.opatr.server.data.TradeOffer;
 import com.madmike.opatr.server.packets.PacketIDs;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -29,6 +30,9 @@ public class SyncPlayerPartyChangeReceiver {
                         );
                         iterator.set(updated);
                     }
+                }
+                if (client.currentScreen instanceof TradingScreen tradingScreen) {
+                    tradingScreen.rebuildTabs();
                 }
             });
         });

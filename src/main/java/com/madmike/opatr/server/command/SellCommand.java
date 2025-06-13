@@ -73,7 +73,7 @@ public class SellCommand {
 
         TradeOfferStorage.get(player.getServerWorld()).addOffer(offer);
 
-        SyncAddOfferS2CPacket.sendToAll(offer, player.getServer());
+        SyncAddOfferS2CPacket.sendToAll(offer, server);
 
         player.sendMessage(Text.literal("Listed item for " + price + " coins.").formatted(Formatting.GOLD), false);
         return 1;

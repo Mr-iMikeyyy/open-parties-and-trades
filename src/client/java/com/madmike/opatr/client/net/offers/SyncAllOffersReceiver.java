@@ -1,5 +1,6 @@
 package com.madmike.opatr.client.net.offers;
 
+import com.madmike.opatr.client.gui.TradingScreen;
 import com.madmike.opatr.server.packets.PacketIDs;
 import com.madmike.opatr.server.data.TradeOffer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -25,6 +26,9 @@ public class SyncAllOffersReceiver {
                 client.execute(() -> {
                     OFFER_CACHE.clear();
                     OFFER_CACHE.addAll(offers);
+                    if (client.currentScreen instanceof TradingScreen tradingScreen) {
+                        tradingScreen.refresh();
+                    }
                 });
             });
         });

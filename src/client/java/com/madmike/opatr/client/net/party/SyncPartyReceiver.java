@@ -1,5 +1,6 @@
 package com.madmike.opatr.client.net.party;
 
+import com.madmike.opatr.client.gui.TradingScreen;
 import com.madmike.opatr.server.data.KnownParty;
 import com.madmike.opatr.server.packets.PacketIDs;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -14,6 +15,9 @@ public class SyncPartyReceiver {
             // Run on main thread and apply to screen
             client.execute(() -> {
                 PARTY_NAME_CACHE.put(party.partyID(), party.name());
+                if (client.currentScreen instanceof TradingScreen tradingScreen) {
+                    tradingScreen.rebuildTabs();
+                }
             });
         });
     }

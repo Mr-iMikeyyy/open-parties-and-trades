@@ -15,10 +15,8 @@ public class SyncPartyS2CPacket {
         PacketByteBuf buf = PacketByteBufs.create();
         updatedParty.writeToBuf(buf);
 
-        CompletableFuture.runAsync(() -> {
-            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                ServerPlayNetworking.send(player, PacketIDs.SYNC_PARTY_PACKET, buf);
-            }
-        });
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+            ServerPlayNetworking.send(player, PacketIDs.SYNC_PARTY_PACKET, buf);
+        }
     }
 }

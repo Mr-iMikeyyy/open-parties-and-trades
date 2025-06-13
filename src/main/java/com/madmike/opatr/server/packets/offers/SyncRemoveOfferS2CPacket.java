@@ -13,9 +13,9 @@ import java.util.concurrent.CompletableFuture;
 public class SyncRemoveOfferS2CPacket {
     public static void sendToAll(TradeOffer offer, MinecraftServer server) {
         PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeUuid(offer.offerID());
+        offer.writeToBuf(buf);
 
-        CompletableFuture.runAsync(() -> {
+        server.execute(() -> {
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 ServerPlayNetworking.send(player, PacketIDs.SYNC_REMOVE_OFFER_PACKET, buf);
             }

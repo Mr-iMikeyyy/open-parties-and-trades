@@ -19,14 +19,11 @@ public class SyncPlayerPartyChangeS2CPacket {
         if (partyId != null) {
             buf.writeBoolean(true);
             buf.writeUuid(partyId);
-        }
-        else {
+        } else {
             buf.writeBoolean(false);
         }
-        CompletableFuture.runAsync(() -> {
-            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                ServerPlayNetworking.send(player, PacketIDs.SYNC_PLAYER_PARTY_CHANGE_PACKET, buf);
-            }
-        });
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+            ServerPlayNetworking.send(player, PacketIDs.SYNC_PLAYER_PARTY_CHANGE_PACKET, buf);
+        }
     }
 }

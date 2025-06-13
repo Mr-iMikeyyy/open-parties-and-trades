@@ -1,5 +1,6 @@
 package com.madmike.opatr.client.net.offers;
 
+import com.madmike.opatr.client.gui.TradingScreen;
 import com.madmike.opatr.server.data.TradeOffer;
 import com.madmike.opatr.server.packets.PacketIDs;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -14,6 +15,11 @@ public class SyncAddOfferReceiver {
             // Run on main thread and apply to screen
             client.execute(() -> {
                 OFFER_CACHE.add(offer);
+                if (client.currentScreen instanceof TradingScreen tradingScreen) {
+                    if (tradingScreen.getCurrentTab().partyId().equals(offer.partyID())) {
+                        tradingScreen.refresh();
+                    }
+                }
             });
         });
     }

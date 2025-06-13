@@ -2,6 +2,8 @@ package com.madmike.opatr.server.net.offers;
 
 import com.glisco.numismaticoverhaul.ModComponents;
 import com.glisco.numismaticoverhaul.currency.CurrencyComponent;
+import com.madmike.opatr.server.data.Profit;
+import com.madmike.opatr.server.data.ProfitStorage;
 import com.madmike.opatr.server.data.TradeOfferStorage;
 import com.madmike.opatr.server.data.TradeOffer;
 import com.madmike.opatr.server.packets.PacketIDs;
@@ -30,12 +32,10 @@ public class BuyOfferReceiver {
                     return;
                 }
 
-
-                IServerPartyAPI buyerParty = pm.getPartyById(buyerId);
+                IServerPartyAPI buyerParty = pm.getPartyByMember(buyerId);
 
                 UUID sellerId = offer.sellerID();
                 UUID sellerPartyID = offer.partyID();
-
                 IServerPartyAPI sellerParty = pm.getPartyById(sellerPartyID);
 
                 double multiplier = 1.0;
@@ -45,26 +45,28 @@ public class BuyOfferReceiver {
                 boolean sellerInParty = sellerParty != null;
 
                 if (buyerInParty && sellerInParty) {
-                    if (!buyerParty.equals(sellerParty)) {
-                        boolean areAllies = OpenPACServerAPI.get(server)
-                                .getPartyManager()
-                                .getPartiesThatAlly(buyerParty.getId()).toList().contains(sellerParty);
-                        if (areAllies) {
-                            multiplier = 0.5; // 50% discount for allies
-                        }
+                    if (buyerParty.isAlly(sellerPartyID)) {
+                        multiplier = 0.5;
                     }
-                    // Else same party — no change
                 } else if (buyerInParty ^ sellerInParty) {
                     multiplier = 2.0; // Society <-> Scallywag
+                } else if (!buyerInParty && !sellerInParty) {
+                    multiplier = 0.5;
                 }
 
                 long finalPrice = (long) Math.ceil(offer.price() * multiplier);
 
                 // Get buyer currency component
-                CurrencyComponent buyerWallet = ModComponents.CURRENCY.get(buyerId);
+                CurrencyComponent buyerWallet = ModComponents.CURRENCY.get(player);
 
                 if (buyerWallet.getValue() < finalPrice) {
                     player.sendMessage(Text.literal("§cYou can't afford this item."), false);
+                    return;
+                }
+
+                // Give item to buyer
+                if (!player.getInventory().insertStack(offer.item().copy())) {
+                    player.sendMessage(Text.literal("§cNo room in your inventory."), false);
                     return;
                 }
 
@@ -76,14 +78,10 @@ public class BuyOfferReceiver {
                 if (seller != null) {
                     CurrencyComponent sellerWallet = ModComponents.CURRENCY.get(sellerId);
                     sellerWallet.modify(finalPrice);
-                } else {
-                    // TODO: Offline seller handling (bank queue?)
                 }
-
-                // Give item to buyer
-                if (!player.getInventory().insertStack(offer.item().copy())) {
-                    player.sendMessage(Text.literal("§cNo room in your inventory."), false);
-                    return;
+                // Give money to seller next time they log in
+                else {
+                    ProfitStorage.get(server.getOverworld()).addProfit(new Profit(sellerId, finalPrice));
                 }
 
                 // Remove offer from listing

@@ -1,6 +1,7 @@
 package com.madmike.opatr.client.net.party;
 
 import com.madmike.opatr.client.cache.PartyNameCache;
+import com.madmike.opatr.client.gui.TradingScreen;
 import com.madmike.opatr.server.packets.PacketIDs;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
@@ -21,6 +22,9 @@ public class SyncAllPartiesReceiver {
             client.execute(() -> {
                 PartyNameCache.PARTY_NAME_CACHE.clear();
                 PartyNameCache.PARTY_NAME_CACHE.putAll(receivedParties);
+                if (client.currentScreen instanceof TradingScreen tradingScreen) {
+                    tradingScreen.rebuildTabs();
+                }
             });
         });
     }

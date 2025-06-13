@@ -1,5 +1,8 @@
 package com.madmike.opatr.server.events;
 
+import com.glisco.numismaticoverhaul.ModComponents;
+import com.madmike.opatr.server.data.Profit;
+import com.madmike.opatr.server.data.ProfitStorage;
 import com.madmike.opatr.server.data.TradeOfferStorage;
 import com.madmike.opatr.server.monitor.PartyNameMonitor;
 import com.madmike.opatr.server.packets.offers.SyncAllOffersS2CPacket;
@@ -23,15 +26,24 @@ public class EventManager {
             // Sync offers
             TradeOfferStorage storage = TradeOfferStorage.get(player.getServerWorld());
             List<TradeOffer> offers = storage.getOffers();
-            SyncAllOffersS2CPacket.send(player, offers);
+            SyncAllOffersS2CPacket.send(player, offers, server);
 
             // Sync party ID -> name map
             HashMap<UUID, String> partyIdNameMap = new HashMap<>();
             OpenPACServerAPI.get(server).getPartyManager().getAllStream().forEach(party -> {
                 partyIdNameMap.put(party.getId(), party.getDefaultName());
             });
-
             SyncAllPartiesS2CPacket.send(player, partyIdNameMap);
+
+            // Give payments if they have sold anything while offline
+            UUID id = player.getUuid();
+            ProfitStorage ps = ProfitStorage.get(server.getOverworld());
+            if (ps.hasProfitFor(id)) {
+                ps.getProfitsFor(id).forEach(e -> {
+                        ModComponents.CURRENCY.get(player).modify(e.profitAmount());
+                });
+                ps.clearProfitsFor(id);
+            }
         });
 
         //Start the party name monitor

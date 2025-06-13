@@ -17,7 +17,7 @@ public class SyncAddOfferS2CPacket {
         offer.writeToBuf(buf);
 
         // Get all online players and send the packet to each
-        CompletableFuture.runAsync(() -> {
+        server.execute(() -> {
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 ServerPlayNetworking.send(player, PacketIDs.SYNC_ADD_OFFER_PACKET, buf);
             }
